@@ -1,6 +1,36 @@
 from django.shortcuts import render, redirect
 from .models import CustomUser
 from django.contrib import messages
+import json
+from .models import Order
+
+# Example menu items (in real app, use models)
+CURRIES = [
+    {'id': 1, 'name': 'Paneer Butter Masala', 'price': 180, 'img': 'paneer.jpg'},
+    {'id': 2, 'name': 'Chicken Curry', 'price': 220, 'img': 'chickencurry.jpg'},
+    {'id': 3, 'name': 'Dal Tadka', 'price': 140, 'img': 'daltadka.jpg'},
+]
+BURGERS = [
+    {'id': 101, 'name': 'Cheese Burger', 'price': 120, 'img': 'cheeseburger.jpg'},
+    {'id': 102, 'name': 'Veggie Burger', 'price': 100, 'img': 'veggieburger.jpg'},
+    {'id': 103, 'name': 'Chicken Burger', 'price': 140, 'img': 'chickenburger.jpg'},
+]
+BIRYANIS = [
+    {'id': 11, 'name': 'Hyderabadi Biryani', 'price': 200, 'img': 'hyderabadi.jpg'},
+    {'id': 12, 'name': 'Veg Biryani', 'price': 160, 'img': 'vegbiryani.jpg'},
+    {'id': 13, 'name': 'Chicken Dum Biryani', 'price': 220, 'img': 'chickenbiryani.jpg'},
+]
+TIFFINS = [
+    {'id': 21, 'name': 'Idli', 'price': 40, 'img': 'idli.jpg'},
+    {'id': 22, 'name': 'Dosa', 'price': 50, 'img': 'dosa.jpg'},
+    {'id': 23, 'name': 'Puri', 'price': 45, 'img': 'puri.jpg'},
+]
+SOFTDRINKS = [
+    {'id': 31, 'name': 'Coke', 'price': 40, 'img': 'coke.jpg'},
+    {'id': 32, 'name': 'Sprite', 'price': 40, 'img': 'sprite.jpg'},
+    {'id': 33, 'name': 'Fresh Lime Soda', 'price': 50, 'img': 'limesoda.jpg'},
+]
+ALL_ITEMS = CURRIES + BURGERS + BIRYANIS + TIFFINS + SOFTDRINKS
 
 def index(request):
     return render(request, 'index.html')
@@ -18,8 +48,11 @@ def signin(request):
         user = CustomUser.objects.filter(name=name, password=password).first()
         if user:
             request.session['user_id'] = user.id
-            messages.success(request, "Signed in successfully.")
-            return redirect('index')
+            request.session['role'] = user.role
+            if user.role == 'admin':
+                return redirect('admin_home')  # Create an admin home view/page
+            else:
+                return redirect('menu')  # User home page
         else:
             messages.error(request, "Invalid username or password.")
     return render(request, 'signin.html')
@@ -46,3 +79,156 @@ def signup(request):
 
 def forgot_password(request):
     return render(request, 'forgot_password.html')
+
+def menu(request):
+    return render(request, 'menu.html')
+
+def burgers(request):
+    if request.method == 'POST':
+        cart = request.session.get('cart', {})
+        item_id = str(request.POST.get('item_id'))
+        if item_id in cart:
+            cart[item_id] += 1
+        else:
+            cart[item_id] = 1
+        request.session['cart'] = cart
+        return redirect('cart')
+    return render(request, 'burgers.html', {'burgers': BURGERS})
+
+def biryanis(request):
+    if request.method == 'POST':
+        cart = request.session.get('cart', {})
+        if isinstance(cart, list):
+            cart = {}
+        item_id = str(request.POST.get('item_id'))
+        if item_id in cart:
+            cart[item_id] += 1
+        else:
+            cart[item_id] = 1
+        request.session['cart'] = cart
+        return redirect('cart')
+    return render(request, 'biryanis.html', {'biryanis': BIRYANIS})
+
+def curries(request):
+    if request.method == 'POST':
+        cart = request.session.get('cart', {})
+        # If cart is a list (old format), reset to empty dict
+        if isinstance(cart, list):
+            cart = {}
+        item_id = str(request.POST.get('item_id'))
+        if item_id in cart:
+            cart[item_id] += 1
+        else:
+            cart[item_id] = 1
+        request.session['cart'] = cart
+        return redirect('cart')
+    return render(request, 'curries.html', {'curries': CURRIES})
+
+def tiffins(request):
+    if request.method == 'POST':
+        cart = request.session.get('cart', {})
+        if isinstance(cart, list):
+            cart = {}
+        item_id = str(request.POST.get('item_id'))
+        if item_id in cart:
+            cart[item_id] += 1
+        else:
+            cart[item_id] = 1
+        request.session['cart'] = cart
+        return redirect('cart')
+    return render(request, 'tiffins.html', {'tiffins': TIFFINS})
+
+def softdrinks(request):
+    if request.method == 'POST':
+        cart = request.session.get('cart', {})
+        if isinstance(cart, list):
+            cart = {}
+        item_id = str(request.POST.get('item_id'))
+        if item_id in cart:
+            cart[item_id] += 1
+        else:
+            cart[item_id] = 1
+        request.session['cart'] = cart
+        return redirect('cart')
+    return render(request, 'softdrinks.html', {'softdrinks': SOFTDRINKS})
+
+def cart(request):
+    cart = request.session.get('cart', {})
+    items = []
+    grand_total = 0  # Add this line
+    for item in ALL_ITEMS:
+        item_id = str(item['id'])
+        if item_id in cart:
+            item_copy = item.copy()
+            item_copy['quantity'] = cart[item_id]
+            item_copy['total'] = item_copy['price'] * item_copy['quantity']
+            items.append(item_copy)
+            grand_total += item_copy['total']  # Add to grand total
+    if request.method == 'POST':
+        remove_id = request.POST.get('remove_id')
+        if remove_id in cart:
+            if cart[remove_id] > 1:
+                cart[remove_id] -= 1
+            else:
+                del cart[remove_id]
+        request.session['cart'] = cart
+        return redirect('cart')
+    return render(request, 'cart.html', {'items': items, 'grand_total': grand_total})
+
+def pay(request):
+    if request.method == 'POST':
+        payment_type = request.POST.get('payment_type')
+        address = request.POST.get('address')
+        cart = request.session.get('cart', {})
+        items = []
+        grand_total = 0
+        for item in ALL_ITEMS:
+            item_id = str(item['id'])
+            if item_id in cart:
+                item_copy = item.copy()
+                item_copy['quantity'] = cart[item_id]
+                item_copy['total'] = item_copy['price'] * item_copy['quantity']
+                items.append(item_copy)
+                grand_total += item_copy['total']
+        # Save order
+        user_id = request.session.get('user_id', 0)
+        Order.objects.create(
+            user_id=user_id,
+            address=address,
+            payment_type=payment_type,
+            items=json.dumps(items),
+            total=grand_total
+        )
+        # Clear cart after payment
+        request.session['cart'] = {}
+        return render(request, 'pay.html', {
+            'payment_done': True,
+            'payment_type': payment_type,
+            'address': address,
+            'items': items,                # <-- Pass items to template
+            'grand_total': grand_total     # <-- Pass grand_total to template
+        })
+    return render(request, 'pay.html', {'payment_done': False})
+
+def myorders(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('signin')  # Redirect to sign in if not logged in
+    orders = Order.objects.filter(user_id=user_id).order_by('-created_at')
+    for order in orders:
+        order.items_list = json.loads(order.items)
+    return render(request, 'myorders.html', {'orders': orders})
+
+def logout_view(request):
+    request.session.flush()
+    return redirect('signin')
+
+def admin_home(request):
+    # Add your admin dashboard logic here
+    return render(request, 'admin_home.html')
+
+def admin_manage_items(request):
+    if request.session.get('role') != 'admin':
+        return redirect('menu')
+    # Your logic for adding/removing items goes here
+    return render(request, 'admin_manage_items.html')

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}My Orders | Tastynest{% endblock %}
+{% block content %}
+<h2 style="text-align:center; color:#ff7043; margin-bottom:32px;">My Orders</h2>
+{% if orders %}
+    {% for order in orders %}
+        <div style="background:#fffbe7; border-radius:12px; margin:24px auto; max-width:500px; padding:24px;">
+            <p><strong>Date:</strong> {{ order.created_at }}</p>
+            <p><strong>Address:</strong> {{ order.address }}</p>
+            <p><strong>Payment:</strong> {{ order.payment_type }}</p>
+            <p><strong>Total:</strong> ₹{{ order.total }}</p>
+            <ul>
+                {% for item in order.items_list %}
+                    <li>{{ item.name }} x {{ item.quantity }} = ₹{{ item.total }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+{% else %}
+    <p style="text-align:center;">No orders yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,9 +1,10 @@
 from django.db import models
 
 class CustomUser(models.Model):
-    name = models.CharField(max_length=150, unique=True)
+    name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=128)
+    password = models.CharField(max_length=100)
+    role = models.CharField(max_length=10, choices=[('admin', 'Admin'), ('user', 'User')], default='user')
 
     def __str__(self):
         return self.name
@@ -33,3 +34,11 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.name} on {self.recipe.title}'
+
+class Order(models.Model):
+    user_id = models.IntegerField()
+    address = models.CharField(max_length=255)
+    payment_type = models.CharField(max_length=32)
+    items = models.TextField()
+    total = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)

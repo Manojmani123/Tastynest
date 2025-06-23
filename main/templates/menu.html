@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Menu | Tastynest{% endblock %}
+
+{% block content %}
+<h2 style="text-align:center; color:#ff7043; margin-bottom:32px;">Order Menu</h2>
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 32px;">
+    <a href="{% url 'burgers' %}" style="text-decoration:none;">
+        <div style="background: #fffbe7; border-radius: 14px; box-shadow: 0 2px 12px rgba(255,112,67,0.13); padding: 24px; width: 220px; text-align: center;">
+            <img src="{% static 'img/burger.jpg' %}" alt="Burgers" style="width:100px; height:100px; object-fit:cover; border-radius:50%; margin-bottom:12px;">
+            <h3 style="color:#ff7043;">Burgers</h3>
+            <ul style="list-style:none; padding:0; color:#444;">
+                <li>Cheese Burger</li>
+                <li>Veggie Burger</li>
+                <li>Chicken Burger</li>
+            </ul>
+        </div>
+    </a>
+    <a href="{% url 'biryanis' %}" style="text-decoration:none;">
+        <div style="background: #fffbe7; border-radius: 14px; box-shadow: 0 2px 12px rgba(255,112,67,0.13); padding: 24px; width: 220px; text-align: center;">
+            <img src="{% static 'img/biryani.jpg' %}" alt="Biryanis" style="width:100px; height:100px; object-fit:cover; border-radius:50%; margin-bottom:12px;">
+            <h3 style="color:#ff7043;">Biryanis</h3>
+            <ul style="list-style:none; padding:0; color:#444;">
+                <li>Hyderabadi Biryani</li>
+                <li>Veg Biryani</li>
+                <li>Chicken Dum Biryani</li>
+            </ul>
+        </div>
+    </a>
+    <a href="{% url 'curries' %}" style="text-decoration:none;">
+        <div style="background: #fffbe7; border-radius: 14px; box-shadow: 0 2px 12px rgba(255,112,67,0.13); padding: 24px; width: 220px; text-align: center;">
+            <img src="{% static 'img/curry.jpg' %}" alt="Indian Curries" style="width:100px; height:100px; object-fit:cover; border-radius:50%; margin-bottom:12px;">
+            <h3 style="color:#ff7043;">Indian Curries</h3>
+            <ul style="list-style:none; padding:0; color:#444;">
+                <li>Paneer Butter Masala</li>
+                <li>Chicken Curry</li>
+                <li>Dal Tadka</li>
+            </ul>
+        </div>
+    </a>
+    <a href="{% url 'tiffins' %}" style="text-decoration:none;">
+        <div style="background: #fffbe7; border-radius: 14px; box-shadow: 0 2px 12px rgba(255,112,67,0.13); padding: 24px; width: 220px; text-align: center;">
+            <img src="{% static 'img/tiffin.jpg' %}" alt="Tiffins" style="width:100px; height:100px; object-fit:cover; border-radius:50%; margin-bottom:12px;">
+            <h3 style="color:#ff7043;">Tiffins</h3>
+            <ul style="list-style:none; padding:0; color:#444;">
+                <li>Idli</li>
+                <li>Dosa</li>
+                <li>Puri</li>
+            </ul>
+        </div>
+    </a>
+    <a href="{% url 'softdrinks' %}" style="text-decoration:none;">
+        <div style="background: #fffbe7; border-radius: 14px; box-shadow: 0 2px 12px rgba(255,112,67,0.13); padding: 24px; width: 220px; text-align: center;">
+            <img src="{% static 'img/softdrink.jpg' %}" alt="Soft Drinks" style="width:100px; height:100px; object-fit:cover; border-radius:50%; margin-bottom:12px;">
+            <h3 style="color:#ff7043;">Soft Drinks</h3>
+            <ul style="list-style:none; padding:0; color:#444;">
+                <li>Coke</li>
+                <li>Sprite</li>
+                <li>Fresh Lime Soda</li>
+            </ul>
+        </div>
+    </a>
+</div>
+{% endblock %}

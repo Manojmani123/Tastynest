@@ -122,6 +122,46 @@
                 <li><a href="{% url 'about' %}" class="nav-btn">About</a></li>
                 <li><a href="{% url 'signin' %}" class="nav-btn">Sign In</a></li>
                 <li><a href="{% url 'signup' %}" class="nav-btn">Sign Up</a></li>
+                {% if request.session.user_id %}
+                    <li>
+                        <a href="{% url 'myorders' %}" class="nav-btn" style="
+                            background: #fffbe7;
+                            color: #ff7043;
+                            border: 2px solid #ff7043;
+                            border-radius: 7px;
+                            padding: 8px 18px;
+                            font-weight: bold;
+                            text-decoration: none;
+                            margin-left: 10px;
+                        ">My Orders</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}" class="nav-btn" style="
+                            background: #ff7043;
+                            color: #fffbe7;
+                            border: 2px solid #ff7043;
+                            border-radius: 7px;
+                            padding: 8px 18px;
+                            font-weight: bold;
+                            text-decoration: none;
+                            margin-left: 10px;
+                        ">Logout</a>
+                    </li>
+                {% endif %}
+                {% if request.session.role == 'admin' %}
+                    <li>
+                        <a href="{% url 'admin_manage_items' %}" class="nav-btn" style="
+                            background: #43a047;
+                            color: #fffbe7;
+                            border: none;
+                            border-radius: 7px;
+                            padding: 8px 18px;
+                            font-weight: bold;
+                            text-decoration: none;
+                            margin-left: 10px;
+                        ">Add/Remove Items</a>
+                    </li>
+                {% endif %}
             </ul>
         </nav>
     </header>
@@ -145,7 +185,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 Divya Kitchen. All rights reserved.</p>
+        <p>&copy; 2025 Tastynest. All rights reserved.</p>
     </footer>
     
     <script src="{% static 'js/script.js' %}"></script>

@@ -4,6 +4,42 @@
 {% block title %}Home | Tastynest{% endblock %}
 
 {% block content %}
-<h2>Welcome to Tastynest!</h2>
-<p>This is the main page of Tastynest.</p>
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh;">
+    <h2 style="font-size: 2.5rem; color: #ff7043; margin-bottom: 18px; letter-spacing: 1px; text-shadow: 2px 2px 8px #ffe0b2;">Welcome to Tastynest!</h2>
+    <p style="font-size: 1.25rem; color: #555; margin-bottom: 40px; max-width: 600px; text-align: center;">
+        Dive into a world of delicious recipes, vibrant food photos, and a community of passionate foodies.<br>
+        Sign up to save your favorites, or sign in to access your personalized kitchen experience!
+    </p>
+    <div style="display: flex; gap: 24px; margin-bottom: 40px;">
+        <a href="{% url 'signup' %}" class="btn" style="
+            padding: 14px 36px;
+            background: linear-gradient(90deg, #ff7043 60%, #ffe0b2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(255,112,67,0.13);
+            transition: background 0.2s, color 0.2s;
+        ">Sign Up</a>
+        <a href="{% url 'signin' %}" class="btn" style="
+            padding: 14px 36px;
+            background: #fffbe7;
+            color: #ff7043;
+            border: 2px solid #ff7043;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(255,112,67,0.10);
+            transition: background 0.2s, color 0.2s;
+        ">Sign In</a>
+    </div>
+    <div style="display: flex; gap: 18px; flex-wrap: wrap; justify-content: center;">
+        <img src="{% static 'img/food1.jpg' %}" alt="Food 1" style="width:180px; height:120px; border-radius:14px; box-shadow:0 2px 12px rgba(255,112,67,0.13); border:3px solid #fffbe7;">
+        <img src="{% static 'img/food2.jpg' %}" alt="Food 2" style="width:180px; height:120px; border-radius:14px; box-shadow:0 2px 12px rgba(255,112,67,0.13); border:3px solid #fffbe7;">
+        <img src="{% static 'img/food3.jpg' %}" alt="Food 3" style="width:180px; height:120px; border-radius:14px; box-shadow:0 2px 12px rgba(255,112,67,0.13); border:3px solid #fffbe7;">
+    </div>
+</div>
 {% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Admin Home | Tastynest{% endblock %}
+{% block content %}
+<h2 style="color:#43a047; text-align:center;">Welcome, Admin!</h2>
+<div style="text-align:center; margin-top:32px;">
+    <a href="{% url 'admin_manage_items' %}" class="nav-btn" style="
+        background: #43a047;
+        color: #fffbe7;
+        border: none;
+        border-radius: 7px;
+        padding: 12px 36px;
+        font-size: 1.1em;
+        font-weight: bold;
+        text-decoration: none;
+        box-shadow: 0 2px 8px rgba(67,160,71,0.10);
+        transition: background 0.2s;
+    ">Add/Remove Items</a>
+</div>
+{% endblock %}
