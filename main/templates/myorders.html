@@ -1,45 +1,142 @@
 {% extends "base.html" %}
 {% block title %}My Orders | Tastynest{% endblock %}
 {% block content %}
-<h2 style="text-align:center; color:#ff7043; margin-bottom:32px;">My Orders</h2>
+<style>
+.orders-bg {
+    background: linear-gradient(120deg, #fffbe7 0%, #ffe0b2 100%);
+    min-height: 80vh;
+    padding-bottom: 60px;
+}
+.order-card {
+    background: linear-gradient(135deg, #fffbe7 60%, #ffe0b2 100%);
+    border-radius: 18px;
+    box-shadow: 0 6px 24px rgba(255,112,67,0.13), 0 1.5px 8px rgba(67,160,71,0.08);
+    padding: 28px 22px 22px 22px;
+    max-width: 520px;
+    margin: 32px auto;
+    transition: box-shadow 0.18s;
+    position: relative;
+}
+.order-card:hover {
+    box-shadow: 0 12px 32px rgba(255,112,67,0.20), 0 3px 16px rgba(67,160,71,0.13);
+    z-index: 2;
+}
+.order-card h3 {
+    color: #43a047;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.25em;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+.order-meta {
+    color: #ff7043;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.order-items {
+    margin: 18px 0 10px 0;
+    padding: 0;
+    list-style: none;
+}
+.order-items li {
+    margin-bottom: 10px;
+    font-size: 1.08em;
+    background: #fffbe7;
+    border-radius: 7px;
+    padding: 8px 12px;
+    box-shadow: 0 1px 4px rgba(255,112,67,0.07);
+}
+.discounted {
+    color: #43a047;
+    font-weight: bold;
+}
+.strike {
+    text-decoration: line-through;
+    color: #888;
+    margin-left: 6px;
+}
+.order-totals {
+    margin-top: 12px;
+    font-size: 1.08em;
+    color: #222;
+}
+.order-totals strong {
+    color: #ff7043;
+}
+.filter-form {
+    text-align: center;
+    margin-bottom: 28px;
+}
+.filter-form input[type="date"] {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+.filter-form button {
+    background: #43a047;
+    color: #fffbe7;
+    border: none;
+    border-radius: 7px;
+    padding: 8px 22px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background 0.18s;
+}
+.filter-form button:hover {
+    background: #388e3c;
+}
+.filter-form a {
+    margin-left: 12px;
+    color: #ff7043;
+    text-decoration: underline;
+    font-weight: 600;
+}
+@media (max-width: 600px) {
+    .order-card { padding: 16px 6px 14px 6px; }
+}
+</style>
+<div class="orders-bg">
+    <h2 style="text-align:center; color:#ff7043; margin-bottom:32px; font-family:'Poppins',sans-serif; letter-spacing:1px;">My Orders</h2>
 
-<form method="get" style="text-align:center; margin-bottom:24px;">
-    <input type="date" name="date" value="{{ filter_date|default:'' }}" style="padding:8px; border-radius:5px; border:1px solid #ccc;">
-    <button type="submit" style="background:#43a047; color:#fffbe7; border:none; border-radius:7px; padding:8px 22px; font-weight:600; cursor:pointer;">
-        Filter by Date
-    </button>
-    {% if filter_date %}
-        <a href="{% url 'myorders' %}" style="margin-left:12px; color:#ff7043; text-decoration:underline;">Clear Filter</a>
+    <form method="get" class="filter-form">
+        <input type="date" name="date" value="{{ filter_date|default:'' }}">
+        <button type="submit">Filter by Date</button>
+        {% if filter_date %}
+            <a href="{% url 'myorders' %}">Clear Filter</a>
+        {% endif %}
+    </form>
+
+    {% if orders %}
+        {% for order in orders %}
+            <div class="order-card">
+                <h3>Order on {{ order.created_at|date:"M d, Y H:i" }}</h3>
+                <div class="order-meta">
+                    Address: {{ order.address }}<br>
+                    Payment: {{ order.payment_type }}
+                </div>
+                <ul class="order-items">
+                    {% for item in order.items_list %}
+                        <li>
+                            <span style="font-weight:600;">{{ item.name }}</span>
+                            {% if item.discount and item.discount > 0 %}
+                                <span class="discounted">₹{{ item.discounted_price }} ({{ item.discount }}% OFF)</span>
+                                <span class="strike">₹{{ item.price }}</span>
+                            {% else %}
+                                ₹{{ item.price }}
+                            {% endif %}
+                            × {{ item.quantity }} = <strong>₹{{ item.total }}</strong>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="order-totals">
+                    <div><strong>Original Total:</strong> ₹{{ order.original_total }}</div>
+                    <div><strong>Paid (after discount):</strong> ₹{{ order.total }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p style="text-align:center; color:#888; font-size:1.1em;">No orders yet.</p>
     {% endif %}
-</form>
-
-{% if orders %}
-    {% for order in orders %}
-        <div style="background:#fffbe7; border-radius:12px; margin:24px auto; max-width:500px; padding:24px;">
-            <p><strong>Date:</strong> {{ order.created_at }}</p>
-            <p><strong>Address:</strong> {{ order.address }}</p>
-            <p><strong>Payment:</strong> {{ order.payment_type }}</p>
-            <p><strong>Total (after discount):</strong> ₹{{ order.total }}</p>
-            <ul>
-                {% for item in order.items_list %}
-                    <li>
-                        {% if item.discount and item.discount > 0 %}
-                            <span style="color:#43a047;">Discounted: ₹{{ item.discounted_price }} ({{ item.discount }}% OFF)</span><br>
-                            <span style="text-decoration:line-through; color:#888;">₹{{ item.price }}</span>
-                        {% else %}
-                            ₹{{ item.price }}
-                        {% endif %}
-                        x {{ item.quantity }} = ₹{{ item.total }}
-                    </li>
-                {% endfor %}
-            </ul>
-            <p>
-                <strong>Original Total:</strong> ₹{{ order.original_total }}<br>
-                <strong>Total (after discount):</strong> ₹{{ order.total }}
-            </p>
-        </div>
-    {% endfor %}
-{% else %}
-    <p style="text-align:center;">No orders yet.</p>
-{% endif %}
+</div>
 {% endblock %}
