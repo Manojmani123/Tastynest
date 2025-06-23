@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tastynest{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #fff8f3 0%, #ffe0b2 100%);
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+        header {
+            background: url('{% static "img/food-header.jpg" %}') center/cover no-repeat;
+            color: #fff;
+            padding: 40px 0 20px 0;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            position: relative;
+        }
+        header::after {
+            content: "";
+            position: absolute;
+            left: 0; top: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.35);
+            z-index: 1;
+        }
+        header h1 {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            font-size: 2.8rem;
+            letter-spacing: 2px;
+            margin: 0 0 18px 0;
+            font-family: 'Pacifico', cursive, sans-serif;
+            color: #fffbe7;
+            text-shadow: 2px 2px 8px #ff7043;
+        }
+        nav {
+            position: relative;
+            z-index: 2;
+        }
+        nav ul {
+            display: flex;
+            justify-content: flex-end;
+            gap: 18px;
+            list-style: none;
+            margin: 0 40px 0 0;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+        }
+        .nav-btn {
+            padding: 8px 22px;
+            background: #fffbe7;
+            border: 2px solid #ff7043;
+            border-radius: 22px;
+            text-decoration: none;
+            color: #ff7043;
+            font-weight: 600;
+            font-size: 1.05em;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(255,112,67,0.07);
+        }
+        .nav-btn:hover {
+            background: #ff7043;
+            color: #fffbe7;
+            border-color: #ff7043;
+        }
+        main {
+            padding: 40px 0 30px 0;
+            min-height: 60vh;
+        }
+        .food-gallery {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin: 30px 0 0 0;
+            flex-wrap: wrap;
+        }
+        .food-gallery img {
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(255,112,67,0.13);
+            border: 3px solid #fffbe7;
+            transition: transform 0.2s;
+        }
+        .food-gallery img:hover {
+            transform: scale(1.06) rotate(-2deg);
+            border-color: #ff7043;
+        }
+        footer {
+            background: #ff7043;
+            color: #fffbe7;
+            text-align: center;
+            padding: 18px 0 10px 0;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            margin-top: 30px;
+            border-radius: 18px 18px 0 0;
+        }
+        @media (max-width: 700px) {
+            header h1 { font-size: 2rem; }
+            .food-gallery img { width: 120px; height: 80px; }
+            nav ul { margin-right: 10px; }
+        }
+    </style>
+    <!-- Google Fonts for a beautiful heading (optional) -->
+    <link href="https://fonts.googleapis.com/css?family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Tastynest</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'index' %}" class="nav-btn">Home</a></li>
+                <li><a href="{% url 'about' %}" class="nav-btn">About</a></li>
+                <li><a href="{% url 'signin' %}" class="nav-btn">Sign In</a></li>
+                <li><a href="{% url 'signup' %}" class="nav-btn">Sign Up</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="food-gallery">
+        <img src="{% static 'img/food1.jpg' %}" alt="Delicious Food 1">
+        <img src="{% static 'img/food2.jpg' %}" alt="Delicious Food 2">
+        <img src="{% static 'img/food3.jpg' %}" alt="Delicious Food 3">
+        <img src="{% static 'img/food4.jpg' %}" alt="Delicious Food 4">
+        <img src="{% static 'img/food5.jpg' %}" alt="Delicious Food 5">
+        <img src="{% static 'img/food6.jpg' %}" alt="Delicious Food 6">
+        <img src="{% static 'img/food7.jpg' %}" alt="Delicious Food 7">
+        <img src="{% static 'img/food8.jpg' %}" alt="Delicious Food 8">
+        <img src="{% static 'img/food9.jpg' %}" alt="Delicious Food 9">
+        <img src="{% static 'img/food10.jpg' %}" alt="Delicious Food 10">
+    </div>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Divya Kitchen. All rights reserved.</p>
+    </footer>
+    
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sign In | Tastynest{% endblock %}
+
+{% block content %}
+<h2 style="text-align:center; margin-bottom: 30px; color: #ff7043; font-size: 2.2rem; letter-spacing: 1px;">Sign In to Tastynest</h2>
+<div style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+    <form method="post" action="" style="
+        background: linear-gradient(135deg, #fffbe7 0%, #ffe0b2 100%);
+        padding: 36px 32px;
+        border-radius: 18px;
+        box-shadow: 0 6px 32px rgba(255,112,67,0.13);
+        min-width: 320px;
+        width: 100%;
+        max-width: 420px;
+        border: 2px solid #ff7043;
+    ">
+        {% csrf_token %}
+        <div style="margin-bottom: 24px;">
+            <label for="id_username" style="display:block; margin-bottom:7px; font-weight:600; color:#ff7043;">Username:</label>
+            <input type="text" id="id_username" name="username" required style="width:100%; padding:10px; border-radius:7px; border:1.5px solid #ff7043; font-size:1em;">
+        </div>
+        <div style="margin-bottom: 28px;">
+            <label for="id_password" style="display:block; margin-bottom:7px; font-weight:600; color:#ff7043;">Password:</label>
+            <input type="password" id="id_password" name="password" required style="width:100%; padding:10px; border-radius:7px; border:1.5px solid #ff7043; font-size:1em;">
+        </div>
+        <button type="submit" class="nav-btn" style="
+            width: 100%;
+            padding: 12px 0;
+            background: #ff7043;
+            color: #fffbe7;
+            border: none;
+            border-radius: 7px;
+            font-size: 1.15em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px rgba(255,112,67,0.10);
+        ">Sign In</button>
+        <div style="margin-top: 18px; text-align: center;">
+            <a href="{% url 'forgot_password' %}" style="color:#ff7043; font-weight:600; text-decoration:underline;">Forgot Password?</a>
+        </div>
+        <div style="margin-top: 18px; text-align: center;">
+            <span style="color:#555;">Don't have an account?</span>
+            <a href="{% url 'signup' %}" style="color:#ff7043; font-weight:600; text-decoration:underline;">Sign Up</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Main | Tastynest{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh;">
+    <h2 style="font-size: 2.5rem; color: #ff7043; margin-bottom: 18px; letter-spacing: 1px;">Welcome to Divya Kitchen</h2>
+    <p style="font-size: 1.2rem; color: #555; margin-bottom: 40px; max-width: 500px;">
+        Discover delicious recipes, sign up to save your favorites, or sign in to access your personalized kitchen experience!
+    </p>
+    <div style="display: flex; gap: 24px;">
+        <a href="{% url 'index' %}" class="btn" style="
+            padding: 12px 32px;
+            background: #fff;
+            color: #ff7043;
+            border: 2px solid #ff7043;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        " onmouseover="this.style.background='#ff7043';this.style.color='#fff';" onmouseout="this.style.background='#fff';this.style.color='#ff7043';">
+            Home
+        </a>
+        <a href="{% url 'signin' %}" class="btn" style="
+            padding: 12px 32px;
+            background: #ff7043;
+            color: #fff;
+            border: 2px solid #ff7043;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        " onmouseover="this.style.background='#fff';this.style.color='#ff7043';" onmouseout="this.style.background='#ff7043';this.style.color='#fff';">
+            Sign In
+        </a>
+        <a href="{% url 'signup' %}" class="btn" style="
+            padding: 12px 32px;
+            background: #fff;
+            color: #ff7043;
+            border: 2px solid #ff7043;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        " onmouseover="this.style.background='#ff7043';this.style.color='#fff';" onmouseout="this.style.background='#fff';this.style.color='#ff7043';">
+            Sign Up
+        </a>
+    </div>
+</div>
+{% endblock %}

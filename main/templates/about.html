@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About | Tastynest{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh;">
+    <h2 style="font-size: 2.5rem; color: #ff7043; margin-bottom: 18px; letter-spacing: 1px;">About Tastynest</h2>
+    <p style="font-size: 1.2rem; color: #555; margin-bottom: 30px; max-width: 600px; text-align: center;">
+        Tastynest is your vibrant food community! Discover, share, and enjoy delicious recipes from around the world. Whether you’re a home cook or a food lover, Tastynest is the perfect place to find inspiration and connect with others who share your passion for great food.
+    </p>
+    <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+        <img src="{% static 'img/food1.jpg' %}" alt="Food 1" style="width:220px; height:150px; border-radius:14px; box-shadow:0 2px 12px rgba(255,112,67,0.13); border:3px solid #fffbe7;">
+        <img src="{% static 'img/food2.jpg' %}" alt="Food 2" style="width:220px; height:150px; border-radius:14px; box-shadow:0 2px 12px rgba(255,112,67,0.13); border:3px solid #fffbe7;">
+        <img src="{% static 'img/food3.jpg' %}" alt="Food 3" style="width:220px; height:150px; border-radius:14px; box-shadow:0 2px 12px rgba(255,112,67,0.13); border:3px solid #fffbe7;">
+    </div>
+    <div style="margin-top: 40px; background: #fffbe7; border-radius: 12px; padding: 24px 32px; box-shadow: 0 2px 12px rgba(255,112,67,0.10); max-width: 600px;">
+        <h3 style="color: #ff7043; margin-bottom: 12px;">Why Tastynest?</h3>
+        <ul style="color: #444; font-size: 1.1rem; line-height: 1.7;">
+            <li>🌟 Share your favorite recipes with the community</li>
+            <li>🍲 Discover new dishes and cooking tips</li>
+            <li>👩‍🍳 Connect with foodies and home chefs</li>
+            <li>📸 Enjoy beautiful food photography</li>
+            <li>💬 Leave reviews and comments on recipes</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
