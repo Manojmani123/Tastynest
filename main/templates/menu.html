@@ -7,7 +7,12 @@
     <div style="background: #fffbe7; border-radius: 14px; box-shadow: 0 2px 12px rgba(255,112,67,0.13); padding: 24px; width: 220px; text-align: center;">
         <h3 style="color:#ff7043;">{{ item.name }}</h3>
         <p style="color:#444;">Category: {{ item.category|default:"Uncategorized" }}</p>
-        <p style="color:#444;">₹{{ item.price }}</p>
+        <p style="color:#444;">
+            ₹{{ item.price }}
+            {% if item.discount and item.discount > 0 %}
+                <span style="color: #43a047; font-weight: bold;">-{{ item.discount }}% OFF</span>
+            {% endif %}
+        </p>
         <form method="post" action="{% url 'menu' %}">
             {% csrf_token %}
             <input type="hidden" name="item_id" value="{{ item.id }}">

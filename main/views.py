@@ -170,16 +170,20 @@ def cart(request):
     for item_id, quantity in cart.items():
         try:
             item = Item.objects.get(id=item_id)
+            discount = item.discount or 0
+            discounted_price = item.price * (100 - discount) // 100
             item_dict = {
                 'id': item.id,
                 'name': item.name,
                 'price': item.price,
+                'discount': discount,
                 'category': item.category,
                 'quantity': quantity,
-                'total': item.price * quantity,
+                'total': discounted_price * quantity,
+                'discounted_price': discounted_price,
             }
             items.append(item_dict)
-            grand_total += item.price * quantity
+            grand_total += discounted_price * quantity
         except Item.DoesNotExist:
             continue
     return render(request, 'cart.html', {'items': items, 'grand_total': grand_total})
@@ -194,19 +198,22 @@ def pay(request):
         for item_id, quantity in cart.items():
             try:
                 item = Item.objects.get(id=item_id)
+                discount = item.discount or 0
+                discounted_price = item.price * (100 - discount) // 100
                 item_dict = {
                     'id': item.id,
                     'name': item.name,
                     'price': item.price,
+                    'discount': discount,
+                    'discounted_price': discounted_price,
                     'category': item.category,
                     'quantity': quantity,
-                    'total': item.price * quantity,
+                    'total': discounted_price * quantity,
                 }
                 items.append(item_dict)
-                grand_total += item.price * quantity
+                grand_total += discounted_price * quantity
             except Item.DoesNotExist:
                 continue
-        # Save order
         user_id = request.session.get('user_id', 0)
         Order.objects.create(
             user_id=user_id,
@@ -215,7 +222,6 @@ def pay(request):
             items=json.dumps(items),
             total=grand_total
         )
-        # Clear cart after payment
         request.session['cart'] = {}
         return render(request, 'pay.html', {
             'payment_done': True,
@@ -237,6 +243,7 @@ def myorders(request):
         orders = orders.filter(created_at__date=parse_date(filter_date))
     for order in orders:
         order.items_list = json.loads(order.items)
+        order.original_total = sum(item['price'] * item['quantity'] for item in order.items_list)
     return render(request, 'myorders.html', {'orders': orders, 'filter_date': filter_date})
 
 def logout_view(request):
@@ -250,7 +257,6 @@ def admin_home(request):
 def admin_manage_items(request):
     if request.session.get('role') != 'admin':
         return redirect('menu')
-    # Remove item
     if request.method == 'POST':
         if 'remove_id' in request.POST:
             Item.objects.filter(id=request.POST['remove_id']).delete()
@@ -258,7 +264,8 @@ def admin_manage_items(request):
             name = request.POST['name']
             price = request.POST['price']
             category = request.POST.get('category', '')
-            Item.objects.create(name=name, price=price, category=category)
+            discount = int(request.POST.get('discount', 0))
+            Item.objects.create(name=name, price=price, category=category, discount=discount)
         return redirect('admin_manage_items')
     items = Item.objects.all()
     return render(request, 'admin_manage_items.html', {'items': items})

@@ -19,12 +19,24 @@
             <p><strong>Date:</strong> {{ order.created_at }}</p>
             <p><strong>Address:</strong> {{ order.address }}</p>
             <p><strong>Payment:</strong> {{ order.payment_type }}</p>
-            <p><strong>Total:</strong> ₹{{ order.total }}</p>
+            <p><strong>Total (after discount):</strong> ₹{{ order.total }}</p>
             <ul>
                 {% for item in order.items_list %}
-                    <li>{{ item.name }} x {{ item.quantity }} = ₹{{ item.total }}</li>
+                    <li>
+                        {% if item.discount and item.discount > 0 %}
+                            <span style="color:#43a047;">Discounted: ₹{{ item.discounted_price }} ({{ item.discount }}% OFF)</span><br>
+                            <span style="text-decoration:line-through; color:#888;">₹{{ item.price }}</span>
+                        {% else %}
+                            ₹{{ item.price }}
+                        {% endif %}
+                        x {{ item.quantity }} = ₹{{ item.total }}
+                    </li>
                 {% endfor %}
             </ul>
+            <p>
+                <strong>Original Total:</strong> ₹{{ order.original_total }}<br>
+                <strong>Total (after discount):</strong> ₹{{ order.total }}
+            </p>
         </div>
     {% endfor %}
 {% else %}

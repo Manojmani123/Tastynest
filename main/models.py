@@ -47,3 +47,4 @@ class Item(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField()
     category = models.CharField(max_length=100, blank=True, null=True)
+    discount = models.IntegerField(default=0)  # Discount in percent (e.g., 10 for 10%)
