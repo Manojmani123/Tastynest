@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
-from .models import CustomUser
+from .models import CustomUser, Item  # Make sure you have an Item model
 from django.contrib import messages
 import json
 from .models import Order
+from django.utils.dateparse import parse_date
 
 # Example menu items (in real app, use models)
 CURRIES = [
@@ -81,7 +82,17 @@ def forgot_password(request):
     return render(request, 'forgot_password.html')
 
 def menu(request):
-    return render(request, 'menu.html')
+    if request.method == 'POST':
+        cart = request.session.get('cart', {})
+        item_id = str(request.POST.get('item_id'))
+        if item_id in cart:
+            cart[item_id] += 1
+        else:
+            cart[item_id] = 1
+        request.session['cart'] = cart
+        return redirect('menu')
+    items = Item.objects.all()
+    return render(request, 'menu.html', {'items': items})
 
 def burgers(request):
     if request.method == 'POST':
@@ -155,24 +166,22 @@ def softdrinks(request):
 def cart(request):
     cart = request.session.get('cart', {})
     items = []
-    grand_total = 0  # Add this line
-    for item in ALL_ITEMS:
-        item_id = str(item['id'])
-        if item_id in cart:
-            item_copy = item.copy()
-            item_copy['quantity'] = cart[item_id]
-            item_copy['total'] = item_copy['price'] * item_copy['quantity']
-            items.append(item_copy)
-            grand_total += item_copy['total']  # Add to grand total
-    if request.method == 'POST':
-        remove_id = request.POST.get('remove_id')
-        if remove_id in cart:
-            if cart[remove_id] > 1:
-                cart[remove_id] -= 1
-            else:
-                del cart[remove_id]
-        request.session['cart'] = cart
-        return redirect('cart')
+    grand_total = 0
+    for item_id, quantity in cart.items():
+        try:
+            item = Item.objects.get(id=item_id)
+            item_dict = {
+                'id': item.id,
+                'name': item.name,
+                'price': item.price,
+                'category': item.category,
+                'quantity': quantity,
+                'total': item.price * quantity,
+            }
+            items.append(item_dict)
+            grand_total += item.price * quantity
+        except Item.DoesNotExist:
+            continue
     return render(request, 'cart.html', {'items': items, 'grand_total': grand_total})
 
 def pay(request):
@@ -182,14 +191,21 @@ def pay(request):
         cart = request.session.get('cart', {})
         items = []
         grand_total = 0
-        for item in ALL_ITEMS:
-            item_id = str(item['id'])
-            if item_id in cart:
-                item_copy = item.copy()
-                item_copy['quantity'] = cart[item_id]
-                item_copy['total'] = item_copy['price'] * item_copy['quantity']
-                items.append(item_copy)
-                grand_total += item_copy['total']
+        for item_id, quantity in cart.items():
+            try:
+                item = Item.objects.get(id=item_id)
+                item_dict = {
+                    'id': item.id,
+                    'name': item.name,
+                    'price': item.price,
+                    'category': item.category,
+                    'quantity': quantity,
+                    'total': item.price * quantity,
+                }
+                items.append(item_dict)
+                grand_total += item.price * quantity
+            except Item.DoesNotExist:
+                continue
         # Save order
         user_id = request.session.get('user_id', 0)
         Order.objects.create(
@@ -205,8 +221,8 @@ def pay(request):
             'payment_done': True,
             'payment_type': payment_type,
             'address': address,
-            'items': items,                # <-- Pass items to template
-            'grand_total': grand_total     # <-- Pass grand_total to template
+            'items': items,
+            'grand_total': grand_total
         })
     return render(request, 'pay.html', {'payment_done': False})
 
@@ -215,9 +231,13 @@ def myorders(request):
     if not user_id:
         return redirect('signin')  # Redirect to sign in if not logged in
     orders = Order.objects.filter(user_id=user_id).order_by('-created_at')
+    filter_date = request.GET.get('date')
+    if filter_date:
+        # Filter orders by date (date only, not time)
+        orders = orders.filter(created_at__date=parse_date(filter_date))
     for order in orders:
         order.items_list = json.loads(order.items)
-    return render(request, 'myorders.html', {'orders': orders})
+    return render(request, 'myorders.html', {'orders': orders, 'filter_date': filter_date})
 
 def logout_view(request):
     request.session.flush()
@@ -230,5 +250,15 @@ def admin_home(request):
 def admin_manage_items(request):
     if request.session.get('role') != 'admin':
         return redirect('menu')
-    # Your logic for adding/removing items goes here
-    return render(request, 'admin_manage_items.html')
+    # Remove item
+    if request.method == 'POST':
+        if 'remove_id' in request.POST:
+            Item.objects.filter(id=request.POST['remove_id']).delete()
+        elif 'add_item' in request.POST:
+            name = request.POST['name']
+            price = request.POST['price']
+            category = request.POST.get('category', '')
+            Item.objects.create(name=name, price=price, category=category)
+        return redirect('admin_manage_items')
+    items = Item.objects.all()
+    return render(request, 'admin_manage_items.html', {'items': items})

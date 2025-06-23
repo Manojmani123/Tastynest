@@ -42,3 +42,8 @@ class Order(models.Model):
     items = models.TextField()
     total = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+class Item(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.IntegerField()
+    category = models.CharField(max_length=100, blank=True, null=True)
